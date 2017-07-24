@@ -1,14 +1,11 @@
 package com.neuralnet;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Sigmoid {
 
     private Neuron neuron;
     private double weight[];
-    int i = 0;
-    int x = 0;
+    private int i = 0;
+    private int x = 0;
 
     public Sigmoid(){
     }
