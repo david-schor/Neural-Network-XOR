@@ -1,54 +1,58 @@
 package com.neuralnet;
 
-public class Main {
+import com.neuralnet.Network.Neuron;
+import com.neuralnet.Steps.Result;
+import com.neuralnet.Steps.*;
 
-    private static double MINWEIGHT = 0.1;
-    private static double MAXWEIGHT = 2.0;
+public class Main extends Setup {
+
+    // Min. Layer = 3 | Min. Neuron per Layer = 1
+    public static int setLayers = 3;
+    public static int setInputNeurons = 2;
+    public static int setHiddenNeurons = 3;
+    public static int setResultNeurons = 1;
 
     public static void main(String[] args) {
 
-        //Input Neurons and Layer
-        Layer inputLayer = new Layer(null);
-        Neuron inputOne = new Neuron();
-        Neuron inputTwo = new Neuron();
 
-        inputOne.setInput(1);
-        inputTwo.setInput(1);
+        // WAS FEHLT:
+        // - BIAS
+        // - learning-rate
+        // - Input setzen + Result! Mit CSV Datei!
 
-        inputLayer.addNeuron(inputOne);
-        inputLayer.addNeuron(inputTwo);
+        // Als nächstes:
+        // - CSV Reader
+        // - Learning-rate
+        // - BIAS
+        // - ALLES ein bisschen Verbessern und verschönern!!!
+        // - Kommentieren : Öffentlich freundlich
 
-        System.out.println(inputLayer.getNeurons());
 
-        //Hidden Neurons and Layer
-        Layer hiddenLayer = new Layer(inputLayer);
-        Neuron hiddenOne = new Neuron();
-        Neuron hiddenTwo = new Neuron();
-        Neuron hiddenThree = new Neuron();
+        // Setup
+        Setup.setup(setLayers, setInputNeurons, setHiddenNeurons, setResultNeurons);
 
-        hiddenLayer.addNeuron(new Sigmoid(hiddenOne, randomWeights()));
-        hiddenLayer.addNeuron(new Sigmoid(hiddenTwo, randomWeights()));
-        hiddenLayer.addNeuron(new Sigmoid(hiddenThree, randomWeights()));
+        for(Neuron n : getLayers().get(0).getNeurons()){
+            n.setInput(0);
+        }
 
-        System.out.println(hiddenLayer.getNeurons());
-        System.out.println(hiddenLayer.getSynapses());
+        Setup.setTarget(1);
 
-        //Result Neurons and Layer
-        Layer resultLayer = new Layer(hiddenLayer);
-        Neuron result = new Neuron();
+        // Loop - Calculate Result
+        BackPropagation bp = new BackPropagation();
+        Result r = new Result();
+        ForwardPropagation fp = new ForwardPropagation();
 
-        resultLayer.addNeuron(new Sigmoid(result, randomWeights()));
+        int p = 0;
 
-        System.out.println(resultLayer.getNeurons());
-        System.out.println(resultLayer.getSynapses());
+        while(p < 15) {
 
-        Sigmoid sigmoid = new Sigmoid();
-        System.out.println(sigmoid.calcSigmoid(hiddenLayer.getNeurons().get(0).getInput() + hiddenLayer.getSynapses().get(0).getWeight() * hiddenLayer.getNeurons().get(1).getInput() + hiddenLayer.getSynapses().get(1).getWeight() * hiddenLayer.getNeurons().get(2).getInput() + hiddenLayer.getSynapses().get(2).getWeight()));
+            fp.start();
+            bp.start();
 
-    }
+            System.out.println("RESULT: " + r.getResult());
+            System.out.println("----------------");
 
-    private static double[] randomWeights(){
-
-        return new double[]{MINWEIGHT + Math.random( ) * MAXWEIGHT, MINWEIGHT + Math.random( ) * MAXWEIGHT};
+            p++;
+        }
     }
 }
